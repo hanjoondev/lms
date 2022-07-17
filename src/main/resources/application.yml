@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:'[PLACEHOLDER_FOR_SCRIPT_PORT]'/'[PLACEHOLDER_FOR_SCRIPT_DATABASE]'
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: '[PLACEHOLDER_FOR_SCRIPT_USER]'
+    password: '[PLACEHOLDER_FOR_SCRIPT_PASSWORD]'
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: '[PLACEHOLDER_FOR_SCRIPT_SMTPUSER]'
+    password: '[PLACEHOLDER_FOR_SCRIPT_SMTPPASSWORD]'
+    properties:
+      '[mail.smtp.starttls.enable]': true
+logging:
+  level:
+    root: info
+mybatis:
+  mapper-locations: mybatis/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
