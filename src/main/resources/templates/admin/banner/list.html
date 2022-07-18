@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 화면 </title>
+    <style>
+        .list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .list table th, .list table td {
+            border:solid 1px #000;
+        }
+
+        p.nothing {
+            text-align: center;
+            padding: 100px;
+        }
+
+        .list .buttons {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .list  .buttons a,.list  .buttons button {
+            border-width: 0;
+            background-color: transparent;
+            text-decoration: underline;
+            font-size: 14px;
+            line-height: 20px;
+            height: 20px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .list .buttons .total-count {
+            /*position: absolute;
+            top: 0;
+            right: 0;*/
+            text-align: right;
+        }
+
+        .list .row-buttons {
+            text-align: center;
+        }
+
+        .pager {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pager a.on {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('#selectAll').on('click', function() {
+                var checked = $(this).is(':checked');
+                $('#dataLIst input[type=checkbox]').each(function(k, v) {
+                    $(this).prop('checked', checked);
+                });
+            });
+            $('#deleteButton').on('click', function() {
+                var $checked = $('#dataLIst input[type=checkbox]:checked');
+                if ($checked.length < 1) {
+                    alert('No banner selected');
+                    return false;
+                }
+                if (!confirm('Would you like to delete selected banner(s)?')) {
+                    return false;
+                }
+                var idList = [];
+                $.each($checked, function(k, v) {
+                    idList.push($(this).val());
+                });
+                console.log(idList);
+                console.log(idList.join(','));
+                var $deleteForm = $('form[name=deleteForm]');
+                $deleteForm.find('input[name=idList]').val( idList.join(',') );
+                $deleteForm.submit();
+            });
+        });
+    </script>
+</head>
+<body>
+<div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+<h1>Banner Management Page</h1>
+<div class="list">
+    <div class="buttons">
+        <p class="total-count">Count: <span th:text="${totalCount}"></span></p>
+        <a href="/admin/banner/add.do">Add New Banner</a>
+        <button id="deleteButton" type="button">Remove Selected</button>
+    </div>
+    <form name="deleteForm" method="post" action="/admin/banner/delete.do">
+        <input type="hidden" name="idList"/>
+    </form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th><input id="selectAll" type="checkbox"/></th>
+                <th>#</th>
+                <th>name</th>
+                <th>image</th>
+                <th>registeredAt</th>
+            </tr>
+        </thead>
+        <tbody id="dataLIst">
+            <tr th:each="x : ${list}">
+                <td><input type="checkbox" th:value="${x.id}"></td>
+                <td th:text="${x.id}">id</td>
+                <td><p th:text="${x.name}">name</p></td>
+                <td>
+                    <img th:if="${x.imgPath != null}" th:src="@{x.imgPath}" width="150px" height="150px">
+                    <p th:if="${x.imgPath == null}" th:text="${x.alternativeTxt}">alternativeTxt</p>
+                </td>
+                <td><p th:text="${x.createdAt}"></p></td>
+            </tr>
+            <tr th:if="${#lists.size(list) < 1}">
+                <td colspan="8" >
+                    <p class="nothing">No data</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pager" th:if="${#lists.size(list) > 0}" th:utext="${pager}">
+    </div>
+</div>
+</body>
+</html>
