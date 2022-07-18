@@ -11,6 +11,8 @@ import dev.hanjoon.lms.admin.dto.MemberDto;
 import dev.hanjoon.lms.admin.model.MemberInput;
 import dev.hanjoon.lms.admin.model.MemberParam;
 import dev.hanjoon.lms.course.controller.BaseController;
+import dev.hanjoon.lms.history.entity.LoginHistory;
+import dev.hanjoon.lms.history.service.LoginHistoryService;
 import dev.hanjoon.lms.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class AdminMemberController extends BaseController {
     private final MemberService memberService;
+    private final LoginHistoryService loginHistoryService;
 
     @GetMapping("/admin/member/list.do")
     public String list(Model model, MemberParam parameter) {
@@ -40,6 +43,8 @@ public class AdminMemberController extends BaseController {
         parameter.init();
         MemberDto member = memberService.detail(parameter.getUserId());
         model.addAttribute("member", member);
+        List<LoginHistory> histories = loginHistoryService.getHistories(parameter.getUserId());
+        model.addAttribute("histories", histories);
         return "admin/member/detail";
     }
 
