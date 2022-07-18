@@ -32,6 +32,8 @@ public class MemberDto {
     private String addrDetail;
     long totalCount;
     long seq;
+    private LocalDateTime lastLoginDt;
+
     public static MemberDto of(Member member) {
         return MemberDto.builder()
                 .userId(member.getUserId())
@@ -49,6 +51,7 @@ public class MemberDto {
                 .zipcode(member.getZipcode())
                 .addr(member.getAddr())
                 .addrDetail(member.getAddrDetail())
+                .lastLoginDt(member.getLastLoginDt())
                 .build();
     }
 
