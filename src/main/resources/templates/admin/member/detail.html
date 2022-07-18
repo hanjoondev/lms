@@ -11,16 +11,12 @@
         .detail table th, .detail table td {
             border:solid 1px #000;
         }
-
     </style>
 </head>
 <body>
     <div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
     <h1>관리자 회원 관리 - 회원 상세 정보</h1>
-
-
     <div class="detail" >
-
         <table>
             <tbody>
                 <tr>
@@ -91,19 +87,34 @@
                         </div>
                     </td>
                 </tr>
-
-
             </tbody>
         </table>
-
+        <br />
+        <div class="history">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>userId</th>
+                        <th>userAgent</th>
+                        <th>clientIp</th>
+                        <th>time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="h: ${histories}">
+                        <td th:text="${h.id}"></td>
+                        <td th:text="${h.userId}"></td>
+                        <td th:text="${h.userAgent}"></td>
+                        <td th:text="${h.clientIp}"></td>
+                        <td th:text="${h.time}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div>
             <a href="list.do"> 목록 </a>
-
         </div>
-
-
     </div>
-
-
 </body>
 </html>

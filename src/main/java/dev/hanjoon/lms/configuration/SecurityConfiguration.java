@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import dev.hanjoon.lms.history.service.LoginHistoryService;
 import dev.hanjoon.lms.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final MemberService memberService;
+    private final LoginHistoryService loginHistoryService;
 
     @Bean
     PasswordEncoder getPasswordEncoder() {
@@ -28,6 +30,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     UserAuthenticationFailureHandler getFailureHandler() {
         return new UserAuthenticationFailureHandler();
+    }
+
+    @Bean
+    UserAuthenticationSuccessHandler getSuccessHandler() {
+        return new UserAuthenticationSuccessHandler(loginHistoryService);
     }
 
     @Override
@@ -54,6 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .hasAuthority("ROLE_ADMIN");
         http.formLogin()
                 .loginPage("/member/login")
+                .successHandler(getSuccessHandler())
                 .failureHandler(getFailureHandler())
                 .permitAll();
         http.logout()
